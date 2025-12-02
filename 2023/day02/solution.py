@@ -1,4 +1,4 @@
-# Day 01
+# Day 02
 """
 PUZZLE:
     As you walk, the Elf shows you a small bag and some cubes which are either
