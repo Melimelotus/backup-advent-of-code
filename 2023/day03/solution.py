@@ -20,7 +20,6 @@ PUZZLE:
     What is the sum of all of the gear ratios in your engine schematic?
 """
 
-from collections import OrderedDict
 import os
 
 def execute(): # TODO WIP
@@ -29,9 +28,10 @@ def execute(): # TODO WIP
     coordinates dictionary of the previous, current and next line to determine
     how many numbers they are adjacent to.
     """
-    numbers_coords_dict=OrderedDict() # Line number:(value,[coord min:coord max])
-    symbols_coords_dict=OrderedDict() # Line number: coord
-    gears_coords_dict=OrderedDict() # Line number: coord
+    max_index=0 # Number of lines in the file
+    numbers_coords_dict=dict() # Line number:(value,[coord min:coord max])
+    symbols_coords_dict=dict() # Line number: coord
+    gears_coords_dict=dict() # Line number: coord
 
     part_numbers_list=list() # Result of part 1
     ratio_list=list() # Result of part 2
@@ -43,24 +43,47 @@ def execute(): # TODO WIP
     # Iterate over all the lines once to build dictionaries
     input_file_path=build_path_to_input()
     with open(input_file_path, "r") as f:
+        
         for line in f:
             '''Probs use regex to isolate numbers, symbols, asterisks and get
             their coords'''
             # Update numbers_coords_dict
+            # TODO
             # Update symbols_coords_dict
+            # TODO
             # Update gears_coords_dict
+            # TODO
+            max_index+=1
             pass
 
     # Analyze contents of dictionaries
     '''
     index=0
-    for current_line in len(any dictionary):
-        previous_line=index-1 (if not index==0)
-        net_line=index+1 (if not index==len(any dictionary))
-        for symbol in symbols_coords_dict:
-            compare coords to coords of numbers in previous, current and next line.
-            Are there adjacent numbers? If yes, add the value of this number to
-            part_numbers_list
+    for current_line_index in len(any dictionary):
+        # Fetch numbers coordinates for the prev, current, next lines
+        previous_line_index=index-1 (if not index==0)
+        net_line_index=index+1 (if not index==len(any dictionary))
+        ...
+
+    for symbol_line_index in symbols_coords_dict:
+        # Fetch numbers coordinates for the prev, current, next lines
+        has_previous_line=False
+        has_next_line=False
+
+        if not symbol_line_index==0
+            previous_line_index=symbol_line_index-1
+            has_previous_line=True
+            ...
+        if not symbol_line_index==max_index:
+            net_line_index=symbol_line_index+1
+            has_next_line=True
+            ...
+
+        if symbol_line_index in numbers_coords_dict:
+            # There are numbers on the symbol's line
+            current_line_numbers_coords=numbers_coords_dict[symbol_line_index]
+            ...
+
         for gear in gears_coords_dict:
             compare coords to coords of numbers in previous, current and next line.
             Are there exactly two adjacent numbers? If yes, ratio, then add the
