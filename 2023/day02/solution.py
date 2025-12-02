@@ -39,6 +39,8 @@ def execute():
     """TODO
     """
     colors_list=['blue', 'green', 'red']
+
+    # Main variables for the first half of the puzzle:
     colors_max_allowed_dict={
         'blue':14,
         'green':13,
@@ -47,6 +49,10 @@ def execute():
     allowed_games_id_list=list()
     sum_of_allowed_games_id=int()
 
+    # Main variables for the second half of the puzzle:
+    # TODO
+
+    # Regular expressions required to parse lines
     id_regex='^Game (?P<id>[0-9]+)'
     color_amount_regex='(?P<amount>[0-9]+) (?P<color>[a-z]+)'
 
