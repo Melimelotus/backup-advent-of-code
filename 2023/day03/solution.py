@@ -29,7 +29,7 @@ def execute(): # TODO WIP
     how many numbers they are adjacent to.
     """
     max_index=0 # Number of lines in the file
-    numbers_coords_dict=dict() # Line number:(value,[coord min:coord max])
+    numbers_coords_dict=dict() # Line number:(value,range(coord min:coord max))
     symbols_coords_dict=dict() # Line number: coord
     gears_coords_dict=dict() # Line number: coord
 
@@ -37,7 +37,8 @@ def execute(): # TODO WIP
     ratio_list=list() # Result of part 2
 
     # Regular expressions to isolate numbers, symbols, asterisks
-    symbols_list=list()
+    symbols_list=['=','+','-','*','%','#','&','@','/','$']
+    regex_special_characters_list=['$','*','+']
     # TODO
 
     # Iterate over all the lines once to build dictionaries
@@ -66,19 +67,16 @@ def execute(): # TODO WIP
         ...
 
     for symbol_line_index in symbols_coords_dict:
-        # Fetch numbers coordinates for the prev, current, next lines
-        has_previous_line=False
-        has_next_line=False
+        has_previous_line=not symbol_line_index==0
+        has_next_line=not symbol_line_index==max_index
 
-        if not symbol_line_index==0
-            previous_line_index=symbol_line_index-1
-            has_previous_line=True
-            ...
-        if not symbol_line_index==max_index:
-            net_line_index=symbol_line_index+1
-            has_next_line=True
-            ...
-
+        # Check if there are numbers on the previous, current, next line
+        if has_previous_line:
+            # are there numbers?
+            pass
+        if has_next_line:
+            # are there numbers?
+            pass
         if symbol_line_index in numbers_coords_dict:
             # There are numbers on the symbol's line
             current_line_numbers_coords=numbers_coords_dict[symbol_line_index]
