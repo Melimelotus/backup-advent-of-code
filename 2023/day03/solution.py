@@ -20,77 +20,75 @@ PUZZLE:
     What is the sum of all of the gear ratios in your engine schematic?
 """
 
+from itertools import pairwise
 import os
+import re
 
-def execute(): # TODO WIP
-    """For each line, seek numbers and build a dictionary of their coordinates.
-    Then, find the coordinates of all symbols and gears. Compare to the numbers
-    coordinates dictionary of the previous, current and next line to determine
-    how many numbers they are adjacent to.
+def execute(): # TODO day 2
+    """TODO
     """
-    max_index=0 # Number of lines in the file
-    numbers_coords_dict=dict() # Line number:(value,range(coord min:coord max))
-    symbols_coords_dict=dict() # Line number: coord
-    gears_coords_dict=dict() # Line number: coord
 
-    part_numbers_list=list() # Result of part 1
+    part_numbers_sum=int() # Result of part 1
     ratio_list=list() # Result of part 2
-
-    # Regular expressions to isolate numbers, symbols, asterisks
     symbols_list=['=','+','-','*','%','#','&','@','/','$']
-    regex_special_characters_list=['$','*','+']
-    # TODO
+    line_length=140
 
-    # Iterate over all the lines once to build dictionaries
+    # Iterate over all the lines
     input_file_path=build_path_to_input()
+
     with open(input_file_path, "r") as f:
-        
-        for line in f:
-            '''Probs use regex to isolate numbers, symbols, asterisks and get
-            their coords'''
-            # Update numbers_coords_dict
-            # TODO
-            # Update symbols_coords_dict
-            # TODO
-            # Update gears_coords_dict
-            # TODO
-            max_index+=1
-            pass
+        # Iterate all over the lines in pairs and analyze the numbers on current
+        previous_line=None
+        for current_raw, next_raw in pairwise(f):
+            current_line=current_raw.strip()
+            next_line=next_raw.strip()
 
-    # Analyze contents of dictionaries
-    '''
-    index=0
-    for current_line_index in len(any dictionary):
-        # Fetch numbers coordinates for the prev, current, next lines
-        previous_line_index=index-1 (if not index==0)
-        net_line_index=index+1 (if not index==len(any dictionary))
-        ...
+            # Get all numbers in current line and their coordinates
+            numbers_matches=re.finditer('\d+', current_line)
 
-    for symbol_line_index in symbols_coords_dict:
-        has_previous_line=not symbol_line_index==0
-        has_next_line=not symbol_line_index==max_index
+            for match in numbers_matches:
+                # Build a list of all adjacent characters
+                min_adjacent_index=match.start(0)-1 if match.start(0)>0 else 0
+                max_adjacent_index=match.end(0)+1 if match.end(0)<=line_length else line_length
 
-        # Check if there are numbers on the previous, current, next line
-        if has_previous_line:
-            # are there numbers?
-            pass
-        if has_next_line:
-            # are there numbers?
-            pass
-        if symbol_line_index in numbers_coords_dict:
-            # There are numbers on the symbol's line
-            current_line_numbers_coords=numbers_coords_dict[symbol_line_index]
-            ...
+                adjacent_chars=str()
+                if previous_line:
+                    adjacent_chars=previous_line[min_adjacent_index:max_adjacent_index]
+                
+                adjacent_chars+=current_line[min_adjacent_index:max_adjacent_index]
+                adjacent_chars+=next_line[min_adjacent_index:max_adjacent_index]
 
-        for gear in gears_coords_dict:
-            compare coords to coords of numbers in previous, current and next line.
-            Are there exactly two adjacent numbers? If yes, ratio, then add the
-            value to ratio_list
-    '''
-    # TODO
+                # Append to part_numbers_list if there is an adjacent symbol
+                for char in adjacent_chars:
+                    if char in symbols_list:
+                        part_numbers_sum+=int(match.group(0))
+                        break
+
+            # Prepare next iteration
+            previous_line=current_line
+
+        # Analyze last line
+        current_line=next_line
+
+        numbers_matches=re.finditer('\d+', current_line)
+        for match in numbers_matches:
+            # Build a list of all adjacent characters
+            min_adjacent_index=match.start(0)-1 if match.start(0)>0 else 0
+            max_adjacent_index=match.end(0)+1 if match.end(0)<line_length else line_length
+
+            adjacent_chars=str()
+            adjacent_chars=previous_line[min_adjacent_index:max_adjacent_index]
+            adjacent_chars+=current_line[min_adjacent_index:max_adjacent_index]
+
+            # Append to part_numbers_list if there is an adjacent symbol
+            for char in adjacent_chars:
+                if char in symbols_list:
+                    part_numbers_sum+=int(match.group(0))
+                    break
 
     # Results
-    # TODO
+    print(part_numbers_sum)
+    result_2=sum(ratio_list) # TODO
     return
 
 def build_path_to_input():
