@@ -24,71 +24,73 @@ from itertools import pairwise
 import os
 import re
 
-def execute(): # TODO day 2
-    """TODO
+def execute():
+    """Find all occurrences of numbers and asterisks on each line; then analyze
+    the neighbourhood of each match to determine if they are a part number or a
+    gear.
     """
-
-    part_numbers_sum=int() # Result of part 1
-    ratio_list=list() # Result of part 2
     symbols_list=['=','+','-','*','%','#','&','@','/','$']
-    line_length=140
+    part_numbers_sum=int() # Result of part 1
+    gear_ratios_sum=int() # Result of part 2
 
-    # Iterate over all the lines
+    # Iterate over all the lines with a previous-current-next lines triplet ----
     input_file_path=build_path_to_input()
-
     with open(input_file_path, "r") as f:
-        # Iterate all over the lines in pairs and analyze the numbers on current
         previous_line=None
         for current_raw, next_raw in pairwise(f):
+            # Clean lines
             current_line=current_raw.strip()
             next_line=next_raw.strip()
 
-            # Get all numbers in current line and their coordinates
+            # Find all occurrences of numbers (first half of the puzzle)
             numbers_matches=re.finditer('\d+', current_line)
-
             for match in numbers_matches:
-                # Build a list of all adjacent characters
-                min_adjacent_index=match.start(0)-1 if match.start(0)>0 else 0
-                max_adjacent_index=match.end(0)+1 if match.end(0)<=line_length else line_length
+                # Search for symbols adjacent to the number
+                adjacent_chars_list=list_adjacent_chars(
+                    match,
+                    match_line=current_line,
+                    previous_line=previous_line,
+                    next_line=next_line
+                )
 
-                adjacent_chars=str()
-                if previous_line:
-                    adjacent_chars=previous_line[min_adjacent_index:max_adjacent_index]
-                
-                adjacent_chars+=current_line[min_adjacent_index:max_adjacent_index]
-                adjacent_chars+=next_line[min_adjacent_index:max_adjacent_index]
-
-                # Append to part_numbers_list if there is an adjacent symbol
+                # Add the number to part_numbers_sum if there is a symbol
+                adjacent_chars=''.join(chars for chars in adjacent_chars_list)
                 for char in adjacent_chars:
                     if char in symbols_list:
                         part_numbers_sum+=int(match.group(0))
                         break
 
+            # Find all occurrences of asterisks (second half of the puzzle)
+            asterisks_matches=re.finditer('\*+', current_line)
+            # TODO
+
             # Prepare next iteration
             previous_line=current_line
 
-        # Analyze last line
+        # Study last line ------------------------------------------------------
         current_line=next_line
 
+        # Find all occurrences of numbers (first half of the puzzle)
         numbers_matches=re.finditer('\d+', current_line)
         for match in numbers_matches:
-            # Build a list of all adjacent characters
-            min_adjacent_index=match.start(0)-1 if match.start(0)>0 else 0
-            max_adjacent_index=match.end(0)+1 if match.end(0)<line_length else line_length
+            # Search for symbols adjacent to the number
+            adjacent_chars_list=list_adjacent_chars(
+                match,
+                match_line=current_line,
+                previous_line=previous_line,
+                next_line=None
+            )
 
-            adjacent_chars=str()
-            adjacent_chars=previous_line[min_adjacent_index:max_adjacent_index]
-            adjacent_chars+=current_line[min_adjacent_index:max_adjacent_index]
-
-            # Append to part_numbers_list if there is an adjacent symbol
+            # Add the number to part_numbers_sum if there is a symbol
+            adjacent_chars=''.join(chars for chars in adjacent_chars_list)
             for char in adjacent_chars:
                 if char in symbols_list:
                     part_numbers_sum+=int(match.group(0))
                     break
 
-    # Results
+    # Results ------------------------------------------------------------------
     print(part_numbers_sum)
-    result_2=sum(ratio_list) # TODO
+    print(gear_ratios_sum)
     return
 
 def build_path_to_input():
@@ -100,6 +102,39 @@ def build_path_to_input():
         name=input_file_name
     )
     return input_file_path
+
+def list_adjacent_chars(match, match_line, previous_line=None, next_line=None, line_length=140):
+    """Build a list of the characters adjacent to the given match object.
+
+        The characters are grouped by line. This function assumes that all lines
+        are of the same length.
+
+        Returns:
+            - adjacent_chars_list: list of str.
+            ['previous_line_chars', 'current_line_chars', 'next_line_chars']
+    """
+    # Build min_index and max_index
+    min_index=match.start(0)-1 if match.start(0)>0 else 0
+    max_index=match.end(0)+1 if match.end(0)<line_length else line_length
+
+    # For each line, fetch characters from min_index to max_index
+    previous_line_chars=str()
+    current_line_chars=str()
+    next_line_chars=str()
+
+    if previous_line:
+        previous_line_chars=previous_line[min_index:max_index]
+    if next_line:
+        next_line_chars=next_line[min_index:max_index]
+    current_line_chars=match_line[min_index]+match_line[max_index-1]
+    
+    adjacent_chars_list=[
+        previous_line_chars,
+        current_line_chars,
+        next_line_chars
+    ]
+
+    return adjacent_chars_list
 
 execute()
 #
